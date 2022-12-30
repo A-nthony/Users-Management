@@ -12,6 +12,13 @@ app.put('/users/:id', user.update)
 app.patch('/users/:id', user.update)
 app.delete('/users/:id', user.destroy)
 
+app.use(express.static('public'))
+
+app.get('/', (req, res) => {
+    console.log(__dirname)
+    res.sendFile(`${__dirname}/views/html/index.html`)
+})
+
 app.get('*', (req, res) => {
     res.status(404).send('Esta pagina no existe')
 })
