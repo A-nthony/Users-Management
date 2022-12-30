@@ -1,8 +1,6 @@
 const express = require('express')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const expressJwt = require('express-jwt')
 const user = require('./controllers/UserController')
+const auth = require('./controllers/AuthController')
 const app = express()
 const port = 3000
 
@@ -20,6 +18,8 @@ app.use(express.static('public'))
 app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/views/html/index.html`)
 })
+
+app.post('/register', auth.register)
 
 app.get('*', (req, res) => {
     res.status(404).send('Esta pagina no existe')
