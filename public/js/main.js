@@ -43,6 +43,35 @@ const getUsers = async () => {
     `
     const userList = document.getElementById('user-list')
     userList.innerHTML = users.map(user => template(user)).join('')
+    users.forEach(user => {
+        const userNode = document.querySelector(`[data-id="${user._id}"]`)
+        
+        userNode.onclick = (e) => {
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/users/${user._id}`, {
+                        method: 'DELETE'
+                    })
+                    userNode.parentNode.parentNode.parentNode.remove()
+                  Swal.fire(
+                    'Deleted!',
+                    'Your User has been deleted.',
+                    'success'
+                  )
+                }
+            })
+            
+        }
+    })
 }
 
 const addFormListener = () => {
