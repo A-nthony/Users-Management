@@ -15,7 +15,6 @@ app.delete('/users/:id', user.destroy)
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-    console.log(__dirname)
     res.sendFile(`${__dirname}/views/html/index.html`)
 })
 

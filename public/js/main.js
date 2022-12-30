@@ -17,7 +17,8 @@ const loadInitialTemplate = () => {
                   </form>
             </div>
         </div>
-        <ul id="user-list"></ul>
+        <ul id="user-list" class="list-group mt-3">
+        </ul>
     </div>
     `
 
@@ -26,7 +27,22 @@ const loadInitialTemplate = () => {
 }
 
 const getUsers = async () => {
-    
+    const response = await fetch('/users')
+    const users = await response.json()
+    const template = user => `
+    <li class="list-group-item">
+        <div class="row align-items-center">
+            <div class="col-lg-10 col-md-10 col-sm-10 col-12">
+                ${user.name} ${user.lastname}
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-12">
+                <button type="button" class="btn btn-danger" data-id="${user._id}"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+    </li>
+    `
+    const userList = document.getElementById('user-list')
+    userList.innerHTML = users.map(user => template(user)).join('')
 }
 
 const addFormListener = () => {
@@ -50,4 +66,5 @@ const addFormListener = () => {
 window.onload = () => {
     loadInitialTemplate()
     addFormListener()
+    getUsers()
 }
