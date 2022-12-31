@@ -1,5 +1,6 @@
+require('dotenv').config()
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://admin:MY34tgPVXVgO1SBk@cluster0.83qm3.mongodb.net/carritocompras?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGODB_URI)
 
 const Users = mongoose.model('User', {
     name: { type: String, require: true, minLength: 3},
