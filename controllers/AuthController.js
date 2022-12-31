@@ -7,7 +7,6 @@ const signToken = _id => jwt.sign({ _id }, 'mi-string-secreto')
 
 const Auth = {
     register: async (req, res) => {
-
         const { body } = req
         try {
             const isUser = await Users.findOne({ email: body.email})
@@ -22,9 +21,30 @@ const Auth = {
         } catch (err) {
             console.log(err)
             res.status(500).send(err.message)
+        }   
+    },
+
+    login: async (req, res) => {
+        const { body } = req
+        try {
+            const user = await Users.findOne({ email: body.email})
+            if (!user) {
+                res.status(403).send('Usuario y/o contraseña inválida')
+            } else {
+                const isMatch = await bcrypt.compare(body.password, user.password)
+                if (isMatch) {
+                    const signed = signToken(user._id)
+                    res.status(200).send(signed)
+                } else {
+                    res.status(403).send('Usuario y/o contraseña inválida')
+                }
+            }
+        } catch (err) {
+            console.log(err)
+            res.status(500).send(err.message)
         }
-        
     }
+
 }
 
 
