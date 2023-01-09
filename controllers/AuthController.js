@@ -1,12 +1,12 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
-const expressJwt = require('express-jwt')
-const jwt = require('jsonwebtoken')
+const { expressjwt: jwt } = require('express-jwt')
+const JWT = require('jsonwebtoken')
 const User = require('../models/User')
 
-const validateJWT = expressJwt({ secret: process.env.SECRET, algorithms: ['HS256']})
+const validateJWT = jwt({ secret: process.env.SECRET, algorithms: ['HS256']})
 
-const signToken = _id => jwt.sign({ _id }, process.env.SECRET)
+const signToken = _id => JWT.sign({ _id }, process.env.SECRET)
 
 const findAndAssignUser = async (req, res, next) => {
     try {

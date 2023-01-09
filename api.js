@@ -1,6 +1,6 @@
 const express = require('express')
 const user = require('./controllers/UserController')
-const auth = require('./controllers/AuthController')
+const {Auth, isAuthenticated} = require('./controllers/AuthController')
 const app = express()
 const port = 3000
 
@@ -19,8 +19,8 @@ app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/views/html/index.html`)
 })
 
-app.post('/register', auth.register)
-app.post('/login', auth.login)
+app.post('/register', Auth.register)
+app.post('/login', Auth.login)
 
 app.get('*', (req, res) => {
     res.status(404).send('Esta pagina no existe')

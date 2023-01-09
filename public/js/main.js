@@ -92,8 +92,71 @@ const addFormListener = () => {
     }
 }
 
-window.onload = () => {
+const checkLogin = () =>
+    localStorage.getItem('jwt')
+
+const usersPage = () => {
     loadInitialTemplate()
     addFormListener()
     getUsers()
+}
+
+const loadLoginTemplate = () => {
+    const template = `
+    <div class="container p-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-6 col-md-6 lg-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class = "text-center">Login</h2>
+                </div>
+                <div class="card-body">
+                    <form id="user-form">
+                        <div class="mb-3">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-5 lg-sm-12">
+                                <label class="form-label">Email</label>
+                            </div>
+                            <div class="col-lg-9 col-md-7 lg-sm-12">
+                                <input type="email" name="email" class="form-control">
+                            </div>
+                        </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-5 lg-sm-12">
+                                    <label class="form-label">Password</label>
+                                </div>
+                                <div class="col-lg-9 col-md-7 lg-sm-12">
+                                    <input type="password" name="password" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 lg-sm-12">
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success">Login</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    </div>
+    `
+
+    const body = document.getElementsByTagName('body')[0]
+    body.innerHTML = template
+}
+
+window.onload = () => {
+    const isLoggedIn = checkLogin()
+    if (isLoggedIn) {
+        usersPage()
+    } else {
+        loadLoginTemplate()
+    }
 }
