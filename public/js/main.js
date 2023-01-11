@@ -111,14 +111,14 @@ const loadLoginTemplate = () => {
                     <h2 class = "text-center">Login</h2>
                 </div>
                 <div class="card-body">
-                    <form id="user-form">
+                    <form id="login-form">
                         <div class="mb-3">
                         <div class="row">
                             <div class="col-lg-3 col-md-5 lg-sm-12">
                                 <label class="form-label">Email</label>
                             </div>
                             <div class="col-lg-9 col-md-7 lg-sm-12">
-                                <input type="email" name="email" class="form-control">
+                                <input type="text" name="email" class="form-control">
                             </div>
                         </div>
                         </div>
@@ -128,7 +128,7 @@ const loadLoginTemplate = () => {
                                     <label class="form-label">Password</label>
                                 </div>
                                 <div class="col-lg-9 col-md-7 lg-sm-12">
-                                    <input type="password" name="password" class="form-control">
+                                    <input type="text" name="password" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -152,11 +152,45 @@ const loadLoginTemplate = () => {
     body.innerHTML = template
 }
 
+const addLoginListener = () => {
+    const loginForm = document.getElementById('login-form')
+    loginForm.onsubmit = async (e) => {
+        e.preventDefault()
+        const formData = new FormData(loginForm)
+        const data = Object.fromEntries(formData.entries())
+
+        const response = await fetch('/login', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers:{
+                'Content-Type' : 'application/json',
+            }
+        })
+
+        const responseData = await response.text()
+        if (response.status >= 300) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Usuario y/o contraseña inválida',
+              })
+        }else{
+            Swal.fire({
+                icon: 'success',
+                title: 'Successful',
+                text: 'Something went wrong!',
+                footer: '<a href="">Why do I have this issue?</a>'
+              })
+        }
+    }
+}
+
 window.onload = () => {
     const isLoggedIn = checkLogin()
     if (isLoggedIn) {
         usersPage()
     } else {
         loadLoginTemplate()
+        addLoginListener()
     }
 }
