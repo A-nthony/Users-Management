@@ -101,6 +101,89 @@ const usersPage = () => {
     getUsers()
 }
 
+const loadRegisterTemplate = () => {
+    const template = `
+    <div class="container p-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-6 col-md-6 lg-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class = "text-center">Register</h2>
+                </div>
+                <div class="card-body">
+                    <form id="register-form">
+                        <div class="mb-3">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-5 lg-sm-12">
+                                <label class="form-label">Email</label>
+                            </div>
+                            <div class="col-lg-9 col-md-7 lg-sm-12">
+                                <input type="text" name="email" class="form-control">
+                            </div>
+                        </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-5 lg-sm-12">
+                                    <label class="form-label">Password</label>
+                                </div>
+                                <div class="col-lg-9 col-md-7 lg-sm-12">
+                                    <input type="text" name="password" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 lg-sm-12">
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success">Registrarse</button>
+                                    <div class="mt-3">
+                                        <span class="form-text">¿Ya tienes Cuenta?</span>
+                                        <a href="#" id="login">Iniciar Sesión</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    </div>
+    `
+
+    const body = document.getElementsByTagName('body')[0]
+    body.innerHTML = template
+}
+const addRegisterListener = () => {}
+const gotoLoginListener = () => {
+    const gotoRegister = document.getElementById('login')
+    gotoRegister.onclick = (e) => {
+        e.preventDefault()
+        loginPage()
+    }
+}
+
+const registerPage = () => {
+    loadRegisterTemplate()
+    addRegisterListener()
+    gotoLoginListener()
+}
+
+const loginPage = () => {
+    loadLoginTemplate()
+    addLoginListener()
+    gotoRegisterListener()
+}
+
+const gotoRegisterListener = () => {
+    const gotoRegister = document.getElementById('register')
+    gotoRegister.onclick = (e) => {
+        e.preventDefault()
+        registerPage()
+    }
+}
+
 const loadLoginTemplate = () => {
     const template = `
     <div class="container p-5">
@@ -136,6 +219,10 @@ const loadLoginTemplate = () => {
                             <div class="col-lg-12 col-md-12 lg-sm-12">
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-success">Login</button>
+                                    <div class="mt-3">
+                                        <span class="form-text">¿No tienes Cuenta?</span>
+                                        <a href="#" id="register">Registro</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -185,12 +272,13 @@ const addLoginListener = () => {
     }
 }
 
+
+
 window.onload = () => {
     const isLoggedIn = checkLogin()
     if (isLoggedIn) {
         usersPage()
     } else {
-        loadLoginTemplate()
-        addLoginListener()
+        loginPage()
     }
 }
