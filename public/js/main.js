@@ -27,7 +27,11 @@ const loadInitialTemplate = () => {
 }
 
 const getUsers = async () => {
-    const response = await fetch('/users')
+    const response = await fetch('/users', {
+        headers: {
+            Authorization : localStorage.getItem('jwt')
+        }
+    })
     const users = await response.json()
     const template = user => `
     <li class="list-group-item">
@@ -59,7 +63,10 @@ const getUsers = async () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch(`/users/${user._id}`, {
-                        method: 'DELETE'
+                        method: 'DELETE',
+                        headers: {
+                            Authorization : localStorage.getItem('jwt')
+                        }
                     })
                     userNode.parentNode.parentNode.parentNode.remove()
                   Swal.fire(
@@ -84,7 +91,8 @@ const addFormListener = () => {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization : localStorage.getItem('jwt')
             }
         })
         userForm.reset()
@@ -113,14 +121,34 @@ const loadRegisterTemplate = () => {
                 <div class="card-body">
                     <form id="register-form">
                         <div class="mb-3">
-                        <div class="row">
-                            <div class="col-lg-3 col-md-5 lg-sm-12">
-                                <label class="form-label">Email</label>
-                            </div>
-                            <div class="col-lg-9 col-md-7 lg-sm-12">
-                                <input type="text" name="email" class="form-control">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-5 lg-sm-12">
+                                    <label class="form-label">Nombres</label>
+                                </div>
+                                <div class="col-lg-9 col-md-7 lg-sm-12">
+                                    <input type="text" name="name" class="form-control">
+                                </div>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-5 lg-sm-12">
+                                    <label class="form-label">Apellidos</label>
+                                </div>
+                                <div class="col-lg-9 col-md-7 lg-sm-12">
+                                    <input type="text" name="lastname" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-5 lg-sm-12">
+                                    <label class="form-label">Email</label>
+                                </div>
+                                <div class="col-lg-9 col-md-7 lg-sm-12">
+                                    <input type="text" name="email" class="form-control">
+                                </div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <div class="row">
@@ -155,7 +183,41 @@ const loadRegisterTemplate = () => {
     const body = document.getElementsByTagName('body')[0]
     body.innerHTML = template
 }
-const addRegisterListener = () => {}
+const addRegisterListener = () => {
+    const registerForm = document.getElementById('register-form')
+    registerForm.onsubmit =  async (e) => {
+        e.preventDefault()
+        const formData = new FormData(registerForm)
+        const data = Object.fromEntries(formData.entries())
+
+        const response = await fetch('/register', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type' : 'application/json'
+            }
+        })
+
+        const responseData = await response.text()
+        if (response.status >= 300) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Error al Registrarte',
+              })
+        }else{
+            await Swal.fire({
+                icon: 'success',
+                title: 'Successful',
+                text: 'Something went wrong!',
+                footer: '<a href="">Why do I have this issue?</a>'
+            })
+            localStorage.setItem('jwt', `Bearer ${responseData}`)
+            loginPage()
+        }
+
+    }
+}
 const gotoLoginListener = () => {
     const gotoRegister = document.getElementById('login')
     gotoRegister.onclick = (e) => {
@@ -268,6 +330,8 @@ const addLoginListener = () => {
                 text: 'Something went wrong!',
                 footer: '<a href="">Why do I have this issue?</a>'
               })
+              localStorage.setItem('jwt', `Bearer ${responseData}`)
+              usersPage()
         }
     }
 }
