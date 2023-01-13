@@ -183,6 +183,7 @@ const loadRegisterTemplate = () => {
     const body = document.getElementsByTagName('body')[0]
     body.innerHTML = template
 }
+
 const addRegisterListener = () => {
     const registerForm = document.getElementById('register-form')
     registerForm.onsubmit =  async (e) => {
@@ -209,7 +210,7 @@ const addRegisterListener = () => {
             await Swal.fire({
                 icon: 'success',
                 title: 'Successful',
-                text: 'Something went wrong!',
+                text: 'Exito al Registrarte!',
                 footer: '<a href="">Why do I have this issue?</a>'
             })
             localStorage.setItem('jwt', `Bearer ${responseData}`)
