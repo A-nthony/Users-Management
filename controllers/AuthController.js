@@ -3,6 +3,9 @@ const bcrypt = require('bcrypt')
 const { expressjwt: jwt } = require('express-jwt')
 const JWT = require('jsonwebtoken')
 const User = require('../models/User')
+const sgMail = require('@sendgrid/mail')
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 const validateJWT = jwt({ secret: process.env.SECRET, algorithms: ['HS256']})
 
@@ -35,6 +38,20 @@ const Auth = {
             const hashed = await bcrypt.hash(body.password, salt)
             const user = User.create({name: body.name, lastname: body.lastname, email: body.email, password: hashed, salt})
             const signed = signToken(user._id)
+            const msg = {
+                to: body.email, // Change to your recipient
+                from: process.env.FROM_SENDGRID, // Change to your verified sender
+                subject: 'Registro con Exito',
+                html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+            }
+            sgMail
+            .send(msg)
+            .then(() => {
+                console.log('Email sent')
+            })
+            .catch((error) => {
+                console.error(error)
+            })
             res.status(201).send(signed)
         } catch (err) {
             console.log(err)
