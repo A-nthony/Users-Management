@@ -325,12 +325,6 @@ const addLoginListener = () => {
                 text: 'Usuario y/o contraseña inválida',
               })
         }else{
-            Swal.fire({
-                icon: 'success',
-                title: 'Successful',
-                text: 'Something went wrong!',
-                footer: '<a href="">Why do I have this issue?</a>'
-              })
               localStorage.setItem('jwt', `Bearer ${responseData}`)
               usersPage()
         }
