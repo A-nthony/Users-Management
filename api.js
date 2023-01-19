@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 
 app.post('/register', Auth.register)
 app.post('/login', Auth.login)
+app.post('/logout', Auth.logout)
 
 app.get('*', (req, res) => {
     res.status(404).send('Esta pagina no existe')

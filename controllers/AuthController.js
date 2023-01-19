@@ -26,6 +26,23 @@ const findAndAssignUser = async (req, res, next) => {
 
 const isAuthenticated = express.Router().use(validateJWT, findAndAssignUser)
 
+const sendMail = async (email, message) => {
+    const msg = {
+        to: `${email}`, // Change to your recipient
+        from: process.env.FROM_SENDGRID, // Change to your verified sender
+        subject: `${message}`,
+        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    }
+    await sgMail
+    .send(msg)
+    .then(() => {
+        console.log('Email sent')
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
+
 const Auth = {
     register: async (req, res) => {
         const { body } = req
@@ -38,21 +55,8 @@ const Auth = {
             const hashed = await bcrypt.hash(body.password, salt)
             const user = User.create({name: body.name, lastname: body.lastname, email: body.email, password: hashed, salt})
             const signed = signToken(user._id)
-            const msg = {
-                to: body.email, // Change to your recipient
-                from: process.env.FROM_SENDGRID, // Change to your verified sender
-                subject: 'Registro con Exito',
-                html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-            }
-            sgMail
-            .send(msg)
-            .then(() => {
-                console.log('Email sent')
-            })
-            .catch((error) => {
-                console.error(error)
-            })
             res.status(201).send(signed)
+            sendMail(body.email, 'Registro con exito')
         } catch (err) {
             console.log(err)
             res.status(500).send(err.message)
@@ -74,6 +78,14 @@ const Auth = {
                     res.status(403).send('Usuario y/o contraseña inválida')
                 }
             }
+        } catch (err) {
+            console.log(err)
+            res.status(500).send(err.message)
+        }
+    },
+    logout: async (req, res) => {
+        try {
+            res.status(200).send("logout")
         } catch (err) {
             console.log(err)
             res.status(500).send(err.message)

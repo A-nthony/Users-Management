@@ -1,5 +1,13 @@
 const loadInitialTemplate = () => {
     const template = `
+    <nav class="navbar bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand">User Management</a>
+          <form  id="logout" class="d-flex">
+            <button class="btn btn-outline-success">Logout</button>
+          </form>
+        </div>
+    </nav>
     <div class="container p-5">
         <div class="card">
             <div class="card-body">
@@ -107,6 +115,7 @@ const usersPage = () => {
     loadInitialTemplate()
     addFormListener()
     getUsers()
+    addLogoutListener()
 }
 
 const loadRegisterTemplate = () => {
@@ -328,6 +337,19 @@ const addLoginListener = () => {
               localStorage.setItem('jwt', `Bearer ${responseData}`)
               usersPage()
         }
+    }
+}
+
+const addLogoutListener = () => {
+    const logout = document.getElementById('logout')
+    logout.onsubmit = async (e) => {
+        e.preventDefault()
+        const response = await fetch('/logout', {
+            method: 'POST',
+        })
+        const responseData = await response.text()
+        localStorage.removeItem('jwt')
+        loginPage()
     }
 }
 
