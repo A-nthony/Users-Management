@@ -9,7 +9,9 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 const validateJWT = jwt({ secret: process.env.SECRET, algorithms: ['HS256']})
 
-const signToken = _id => JWT.sign({ _id }, process.env.SECRET)
+const signToken = _id => JWT.sign({ _id }, process.env.SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN
+})
 
 const findAndAssignUser = async (req, res, next) => {
     try {
