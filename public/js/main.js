@@ -1,9 +1,10 @@
-const loadInitialTemplate = () => {
+const loadInitialTemplate = (user) => {
     const template = `
     <nav class="navbar bg-light">
         <div class="container-fluid">
           <a class="navbar-brand">User Management</a>
           <form  id="logout" class="d-flex">
+            <div class="form-control me-2">${user.email}</div>
             <button class="btn btn-outline-success">Logout</button>
           </form>
         </div>
@@ -34,13 +35,15 @@ const loadInitialTemplate = () => {
     body.innerHTML = template
 }
 
-const getUsers = async () => {
+const getUsers = async (user) => {
+    const jwt = localStorage.getItem('jwt')
     const response = await fetch('/users', {
         headers: {
             Authorization : localStorage.getItem('jwt')
         }
     })
-    const users = await response.json()
+    const usersRes = await response.json()
+    const users = usersRes.filter(usuario => usuario.email != user.email)
     const template = user => `
     <li class="list-group-item">
         <div class="row align-items-center">
@@ -104,17 +107,19 @@ const addFormListener = () => {
             }
         })
         userForm.reset()
-        getUsers()
+        const token = localStorage.getItem('jwt')
+        const user = parseJwt(token).user
+        getUsers(user)
     }
 }
 
 const checkLogin = () =>
     localStorage.getItem('jwt')
 
-const usersPage = () => {
-    loadInitialTemplate()
+const usersPage = (user) => {
+    loadInitialTemplate(user)
     addFormListener()
-    getUsers()
+    getUsers(user)
     addLogoutListener()
 }
 
@@ -335,10 +340,17 @@ const addLoginListener = () => {
               })
         }else{
               localStorage.setItem('jwt', `Bearer ${responseData}`)
-              usersPage()
+              const token = localStorage.getItem('jwt')
+              const user = parseJwt(token).user
+              usersPage(user)
         }
     }
 }
+const parseJwt = (token)=> {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace('-', '+').replace('_', '/');
+    return JSON.parse(window.atob(base64));
+};
 
 const addLogoutListener = () => {
     const logout = document.getElementById('logout')
@@ -358,7 +370,9 @@ const addLogoutListener = () => {
 window.onload = () => {
     const isLoggedIn = checkLogin()
     if (isLoggedIn) {
-        usersPage()
+        const token = localStorage.getItem('jwt')
+        const user = parseJwt(token).user
+        usersPage(user)
     } else {
         loginPage()
     }

@@ -9,7 +9,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 const validateJWT = jwt({ secret: process.env.SECRET, algorithms: ['HS256']})
 
-const signToken = _id => JWT.sign({ _id }, process.env.SECRET, {
+const signToken = (user, _id ) => JWT.sign({user, _id }, process.env.SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
 })
 
@@ -56,7 +56,12 @@ const Auth = {
             const salt = await bcrypt.genSalt()
             const hashed = await bcrypt.hash(body.password, salt)
             const user = User.create({name: body.name, lastname: body.lastname, email: body.email, password: hashed, salt})
-            const signed = signToken(user._id)
+            const userS = {
+                user: user.name,
+                lastname: user.lastname,
+                email: user.email
+            }
+            const signed = signToken(userS, user._id)
             res.status(201).send(signed)
             sendMail(body.email, 'Registro con exito')
         } catch (err) {
@@ -74,7 +79,12 @@ const Auth = {
             } else {
                 const isMatch = await bcrypt.compare(body.password, user.password)
                 if (isMatch) {
-                    const signed = signToken(user._id)
+                    const userS = {
+                        user: user.name,
+                        lastname: user.lastname,
+                        email: user.email
+                    }
+                    const signed = signToken(userS, user._id)
                     res.status(200).send(signed)
                 } else {
                     res.status(403).send('Usuario y/o contraseña inválida')
