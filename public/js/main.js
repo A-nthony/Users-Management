@@ -170,7 +170,7 @@ const loadRegisterTemplate = () => {
                                     <label class="form-label">Password</label>
                                 </div>
                                 <div class="col-lg-9 col-md-7 lg-sm-12">
-                                    <input type="text" name="password" class="form-control">
+                                    <input type="password" name="password" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -288,7 +288,7 @@ const loadLoginTemplate = () => {
                                     <label class="form-label">Password</label>
                                 </div>
                                 <div class="col-lg-9 col-md-7 lg-sm-12">
-                                    <input type="text" name="password" class="form-control">
+                                    <input type="password" name="password" class="form-control">
                                 </div>
                             </div>
                         </div>
